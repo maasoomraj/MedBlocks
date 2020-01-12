@@ -3,51 +3,46 @@ pragma solidity ^0.4.17;
 
 contract Voting{
     address manager;
-    bool public startVote;
-    bool public endVote;
-    mapping(string => address) winner;
-    struct Voter{
+    struct Patient{
         string name;
-        string aadhar;
-        string constituency;
-        bool isVerified;
-        bool hasVoted;
-            
-    }
-    address[] public voters;
-    mapping(address => Voter) public voterDetails;
-    
-    struct Candidate{
-        string name;
-        string aadhar;
-        string constituency;
+        string age;
+        string gender;
+        string preMedicalRecord;
         bool isVerified;
     }
-    
-    struct AdminCandidate{
-        string attendance;
-        string criminalRecord;
-        string fundUtilization;
+    address[] public patients;
+    mapping(address => Patient) public patientDetails;
+    mapping(address => string) public docterComments;
+
+    struct Docter{
+        string name;
+        string age;
+        string gender;
+        string previousRecord;
+        bool isVerified;
+    }
+
+    struct AdminDocter{
         string otherDetails;
     }
-    
-    address[] public candidates;
-    mapping(address => Candidate) public candidateDetails;
-    mapping(address => AdminCandidate) public adminCandidateDetails;
-    mapping(address => uint) totalVotes;
-    
+
+    address public currentPatient;
+
+
+    address[] public docters;
+    mapping(address => Docter) public docterDetails;
+    mapping(address => AdminDocter) public adminDocterDetails;
+
     modifier restricted() {
         require(msg.sender == manager);
         _;
     }
-    
+
     function Voting() public {
         manager=msg.sender;
-        startVote = false;
-        endVote = false;
-        
+        currentPatient = 0x0;
     }
-    
+
     function CompareStrings(string memory a, string memory b) internal pure returns (bool) {
         if(bytes(a).length != bytes(b).length) {
             return false;
@@ -55,121 +50,84 @@ contract Voting{
             return keccak256(a) == keccak256(b);
         }
     }
-    
-    function registerVoter(string name, string aadhar, string constituency) public{
-        require(!startVote);
-        require(!endVote);
-        Voter memory newVoter = Voter({
+
+    function registerPatient(string name, string age, string gender, string preMedicalRecord) public{
+        Patient memory newPatient = Patient({
             name : name,
-            aadhar : aadhar,
-            constituency : constituency,
-            isVerified : false,
-            hasVoted : false
-        });
-        
-        require(!CompareStrings(voterDetails[msg.sender].aadhar, newVoter.aadhar));
-        voterDetails[msg.sender] = newVoter;
-        voters.push(msg.sender);
-    }
-    
-    function registerCandidate(string name, string aadhar, string constituency) public{
-        require(!startVote);
-        require(!endVote);
-        Candidate memory newCandidate = Candidate({
-            name : name,
-            aadhar : aadhar,
-            constituency : constituency,
+            age : age,
+            gender : gender,
+            preMedicalRecord : preMedicalRecord,
             isVerified : false
         });
-        
-        require(!CompareStrings(candidateDetails[msg.sender].aadhar, newCandidate.aadhar));
-        totalVotes[msg.sender]=0;
-        candidateDetails[msg.sender] = newCandidate;
-        candidates.push(msg.sender);
+        patientDetails[msg.sender] = newPatient;
+        patients.push(msg.sender);
     }
-    
-    function verifyVoter(address voterAddress) public restricted{
-        voterDetails[voterAddress].isVerified = true;
+
+    function registerDocter(string name, string age, string gender, string previousRecord) public{
+        Docter memory newDocter = Docter({
+            name : name,
+            age : age,
+            gender : gender,
+            previousRecord : previousRecord,
+            isVerified : false
+        });
+
+        docterDetails[msg.sender] = newDocter;
+        docters.push(msg.sender);
     }
-    
-    function verifyCandidate(address candidateAddress) public restricted {
-        candidateDetails[candidateAddress].isVerified = true;
+
+    function verifyPatient(address patientAddress) public restricted{
+        patientDetails[patientAddress].isVerified = true;
     }
-    
-    
-    function vote(address candidateAddress) public {
-        require(startVote);
-        require(!endVote);
-        require(voterDetails[msg.sender].isVerified);
-        require(!voterDetails[msg.sender].hasVoted);
-        
-        require(CompareStrings(voterDetails[msg.sender].constituency , candidateDetails[candidateAddress].constituency));
-        
-        totalVotes[candidateAddress]++;
-        
-        voterDetails[msg.sender].hasVoted = true;
-        
+
+    function verifyDocter(address docterAddress) public restricted {
+        docterDetails[docterAddress].isVerified = true;
     }
-    
-    function calculateResult(string c) public restricted{
-        require(endVote);
-        uint votes =0;
-        address temp;
-        for(uint i =0 ; i<candidates.length;i++){
-            if(CompareStrings(candidateDetails[candidates[i]].constituency,c)){
-                if(totalVotes[candidates[i]]>votes){
-                    temp = candidates[i];
-                    votes = totalVotes[candidates[i]];
-                }
-            }
+
+
+    function vote() public {
+        if(currentPatient == 0x0)
+        {
+            currentPatient = msg.sender;
         }
-        winner[c]=temp;
+        else
+        {
+            currentPatient = 0x0;
+        }
     }
-    
-    function startElection() public restricted{
-        startVote = true;
+
+    function seePatientDetails()  public view returns (address){
+        require(docterDetails[msg.sender].isVerified);
+
+        return currentPatient;
     }
-    
-        function endElection() public restricted{
-        endVote = true;
+
+
+    function addComments(address patientAddress, string comments) public {
+        require(docterDetails[msg.sender].isVerified);
+
+        docterComments[patientAddress] = comments;
+
     }
-    
-    
-    function addCandidateDetails(
-        address candidateAddress, 
-        string attendance , 
-        string criminalRecord, 
-        string fundUtilization,
-        string otherDetails) public 
+
+    function addDocterDetails(
+        address docterAddress,
+        string otherDetails) public
         restricted {
-        AdminCandidate memory newAdminCandidate = AdminCandidate({
-            attendance : attendance,
-            criminalRecord : criminalRecord,
-            fundUtilization : fundUtilization,
+        AdminDocter memory newAdminDocter = AdminDocter({
             otherDetails : otherDetails
         });
-        
-        adminCandidateDetails[candidateAddress] = newAdminCandidate;
+        adminDocterDetails[docterAddress] = newAdminDocter;
     }
-    
-    function getVoters() public view returns (address[])
+
+    function getPatients() public view returns (address[])
     {
-        return voters;
+        return patients;
     }
-    
-    function getCandidates() public view returns (address[])
+
+    function getDocters() public view returns (address[])
     {
-        return candidates;
-    }
-    
-    function showWinner(string c) public view returns (address){
-        require(endVote);
-        return winner[c];
-    }
-    
-    function winnerVotes(address candidate) public view returns(uint){
-        require(endVote);
-        return totalVotes[candidate];
+        return docters;
     }
     
     function isManager() public view returns (bool){
