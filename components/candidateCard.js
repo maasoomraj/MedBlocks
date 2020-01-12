@@ -15,7 +15,7 @@ class CandidateCard extends Component{
         this.setState({loading : true , errorMessage : ''});
         try{
             const accounts = await web3.eth.getAccounts();
-            await voting.methods.vote(this.props.address).send({
+            await voting.methods.vote().send({
                 from : accounts[0]
             })
             Router.push('/');
@@ -32,13 +32,13 @@ class CandidateCard extends Component{
             <Card>
                 <Card.Content>
                 <Card.Header>{this.props.candidate.name}</Card.Header>
-                <Card.Meta>{this.props.candidate.constituency}</Card.Meta>
-                <Card.Description>{this.props.candidate.aadhar}</Card.Description>
+                <Card.Meta>{this.props.candidate.age}</Card.Meta>
+                <Card.Description>{this.props.candidate.gender}</Card.Description>
                 </Card.Content>
                 <Card.Content extra>
-                    { !!this.props.voterHasVoted ? null : (
-                        <Button onClick = {this.onVote} loading= { this.state.loading }>Vote</Button>
-                    )}
+
+                        <Button onClick = {this.onVote} loading= { this.state.loading }>Send Report</Button>
+
                     <Link route = {`/vote/candidateslist/${this.props.address}`}>
                         <Button>More Details</Button>
                     </Link>

@@ -14,14 +14,14 @@ class RequestRow extends Component{
     onVerify = async()=>{
         this.setState({loading : true });
         const accounts = await web3.eth.getAccounts();
-        await voting.methods.verifyCandidate(this.props.address).send({
+        await voting.methods.verifyDocter(this.props.address).send({
             from : accounts[0]
         });
         this.setState({loading : false });
     };
 
     render(){
-        voting.methods.candidateDetails(this.props.address).call().then( candidate => {
+        voting.methods.docterDetails(this.props.address).call().then( candidate => {
             this.setState({candidate : candidate})
         });
         return(
@@ -29,8 +29,9 @@ class RequestRow extends Component{
                 <Link route = {`/admin/candidates/${this.props.address}`}>
                     <Table.Cell><div style = {{cursor : 'pointer'}}>{this.state.candidate.name}</div></Table.Cell>
                 </Link> 
-                <Table.Cell>{this.state.candidate.aadhar}</Table.Cell>
-                <Table.Cell>{this.state.candidate.constituency}</Table.Cell>
+                <Table.Cell>{this.state.candidate.age}</Table.Cell>
+                <Table.Cell>{this.state.candidate.gender}</Table.Cell>
+                <Table.Cell>{this.state.candidate.previousRecord}</Table.Cell>
                 <Table.Cell>
                     { this.state.candidate.isVerified ? null : (
                         <Button color = "green" basic onClick = {this.onVerify} loading= { this.state.loading }>Verify</Button>

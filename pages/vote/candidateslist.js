@@ -15,17 +15,17 @@ class CandidateList extends Component{
         //let approvedCandidates = [];
         let candidates = [];
         const accounts = await web3.eth.getAccounts();
-        const voter = await voting.methods.voterDetails(accounts[0]).call();
-        if(!voter.aadhar && !voter.isVerified)
+        const voter = await voting.methods.patientDetails(accounts[0]).call();
+        if(!voter.isVerified)
         {
             Router.push('/register/voter');
         }
         else
         {   
-            candidates = await voting.methods.getCandidates().call();
+            candidates = await voting.methods.getDocters().call();
             candidates.forEach(async(address) => {
-                let candidate = await voting.methods.candidateDetails(address).call();
-                if((candidate.constituency === voter.constituency) && candidate.isVerified){
+                let candidate = await voting.methods.docterDetails (address).call();
+                if(candidate.isVerified){
                     let candidatedetail = {
                         candidate : candidate,
                         address : address
@@ -33,7 +33,7 @@ class CandidateList extends Component{
                     this.setState(prevState => ({
                         approvedCandidates: [...prevState.approvedCandidates, candidatedetail]
                    }));
-                   this.setState({voter : voter})
+                   this.setState({voter : voter});
                 }
             });
         }
@@ -46,7 +46,6 @@ class CandidateList extends Component{
                     key={index}
                     candidate = {candidatedetail.candidate}
                     address = {candidatedetail.address}
-                    voterHasVoted = {this.state.voter.hasVoted}
                 />
             )
         });

@@ -8,11 +8,11 @@ import { Router } from '../../routes.js'
 class RegisterVoter extends Component{
     state = {
         name : '',
-        aadhar : '',
-        constituency : '',
+        age : '',
+        gender : '',
+        preMedicalRecord : '',
         errorMessage : '',
-        loading : false 
-
+        loading : false,
     }
 
     onSubmit = async (event) => {
@@ -22,7 +22,8 @@ class RegisterVoter extends Component{
 
         try {
             const accounts = await web3.eth.getAccounts();
-            await voting.methods.registerVoter(this.state.name, this.state.aadhar, this.state.constituency).send({
+            await voting.methods.registerPatient(this.state.name, this.state.age, this.state.gender,
+                this.state.preMedicalRecord).send({
                     from : accounts[0]
                 });
             Router.pushRoute('/');
@@ -48,21 +49,31 @@ class RegisterVoter extends Component{
                         />
                     </Form.Field>
                     <Form.Field>
-                        <label>Aadhar Number</label>
+                        <label>Age</label>
                         <Input
-                            label = "aadhar" 
+                            label = "age"
                             labelPosition = "right"
-                            value={this.state.aadhar}
-                            onChange={event =>this.setState({aadhar : event.target.value})}
+                            value={this.state.age}
+                            onChange={event =>this.setState({age : event.target.value})}
                         />
                     </Form.Field>
                     <Form.Field>
-                        <label>Constituency</label>
+                        <label>Gender</label>
                         <Input
-                            label = "constituency" 
+                            label = "gender"
                             labelPosition = "right"
-                            value={this.state.constituency}
-                            onChange={event =>this.setState({constituency : event.target.value})}
+                            value={this.state.gender}
+                            onChange={event =>this.setState({gender : event.target.value})}
+                        />
+                    </Form.Field>
+
+                    <Form.Field>
+                        <label>Pre Medical Record</label>
+                        <Input
+                            label = "preMedicalRecord"
+                            labelPosition = "right"
+                            value={this.state.preMedicalRecord}
+                            onChange={event =>this.setState({preMedicalRecord : event.target.value})}
                         />
                     </Form.Field>
 

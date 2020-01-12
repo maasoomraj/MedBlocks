@@ -9,10 +9,8 @@ import RequestRow from '../../components/requestVoterRow';
 
 class VoterAdmin extends Component{
     static async getInitialProps(){
-        const registeredVoters = await voting.methods.getVoters().call();
-        const start = await voting.methods.startVote().call();
-        const end = await voting.methods.endVote().call();
-        return {registeredVoters,start,end};
+        const registeredPatients = await voting.methods.getPatients().call();
+        return {registeredPatients};
     }
 
     state = {
@@ -20,8 +18,8 @@ class VoterAdmin extends Component{
         loading2 : false
     }
 
-    VotersList(){
-        return this.props.registeredVoters.map((address,index) =>{
+    PatientsList(){
+        return this.props.registeredPatients.map((address,index) =>{
             return <RequestRow
                 key={index}
                 address = {address} 
@@ -29,23 +27,6 @@ class VoterAdmin extends Component{
         });
     }
 
-    startElecton = async()=>{
-        this.setState({loading : true });
-        const accounts = await web3.eth.getAccounts();
-        await voting.methods.startElection().send({
-            from : accounts[0]
-        });
-        this.setState({loading : false });
-    }
-
-    stopElection = async()=>{
-        this.setState({loading2 : true });
-        const accounts = await web3.eth.getAccounts();
-        await voting.methods.endElection().send({
-            from : accounts[0]
-        });
-        this.setState({loading2 : false });
-    }
 
     render(){
         return(
@@ -53,24 +34,17 @@ class VoterAdmin extends Component{
                 <Link route = '/admin/candidates'>
                     <Button>Show Candidates</Button>
                 </Link>
-                {!this.props.start ? (<Button onClick= {this.startElecton} loading= { this.state.loading }>Start Election</Button>):(
-                    !this.props.end ? (<Button onClick= {this.stopElection} loading= { this.state.loading2 }>End Election</Button>) :(
-                        <Link route = '/admin/calculateresult'>
-                            <Button>Calculate Result</Button>
-                        </Link>
-                    )
-                )}
                 <Table singleLine>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Name</Table.HeaderCell>
-                        <Table.HeaderCell>Aadhar Number</Table.HeaderCell>
-                        <Table.HeaderCell>Constituency</Table.HeaderCell>
+                        <Table.HeaderCell>Age</Table.HeaderCell>
+                        <Table.HeaderCell>Gender</Table.HeaderCell>
                         <Table.HeaderCell>Vertified</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {this.VotersList()}
+                    {this.PatientsList()}
                 </Table.Body>
                 </Table>
             </Layout>

@@ -13,21 +13,21 @@ class RequestRow extends Component{
     onVerify = async()=>{
         this.setState({loading : true });
         const accounts = await web3.eth.getAccounts();
-        await voting.methods.verifyVoter(this.props.address).send({
+        await voting.methods.verifyPatient(this.props.address).send({
             from : accounts[0]
         });
         this.setState({loading : false });
     };
 
     render(){
-        voting.methods.voterDetails(this.props.address).call().then( voter => {
+        voting.methods.patientDetails(this.props.address).call().then( voter => {
             this.setState({voter : voter})
         });
         return(
             <Table.Row disabled= {this.state.voter.isVerified}>
                 <Table.Cell>{this.state.voter.name}</Table.Cell>
-                <Table.Cell>{this.state.voter.aadhar}</Table.Cell>
-                <Table.Cell>{this.state.voter.constituency}</Table.Cell>
+                <Table.Cell>{this.state.voter.age}</Table.Cell>
+                <Table.Cell>{this.state.voter.gender}</Table.Cell>
                 <Table.Cell>
                     { this.state.voter.isVerified ? null : (
                         <Button color = "green" basic onClick = {this.onVerify} loading= { this.state.loading }>Verify</Button>

@@ -8,10 +8,11 @@ import { Router } from '../../routes.js'
 class RegisterCandidate extends Component{
     state = {
         name : '',
-        aadhar : '',
-        constituency : '',
+        age : '',
+        gender : '',
+        previousRecord : '',
         errorMessage : '',
-        loading : false 
+        loading : false
 
     }
 
@@ -22,14 +23,15 @@ class RegisterCandidate extends Component{
 
         try {
             const accounts = await web3.eth.getAccounts();
-            await voting.methods.registerCandidate(this.state.name, this.state.aadhar, this.state.constituency).send({
+            await voting.methods.registerDocter(this.state.name, this.state.age, this.state.gender,
+            this.state.previousRecord).send({
                     from : accounts[0]
                 });
             Router.pushRoute('/');
         } catch(err){
             this.setState({ errorMessage : err.message })
         }
-        
+
         this.setState({loading : false})
     };
 
@@ -41,28 +43,37 @@ class RegisterCandidate extends Component{
                     <Form.Field>
                         <label>Name</label>
                         <Input
-                            label = "name" 
+                            label = "name"
                             labelPosition = "right"
                             value={this.state.name}
                             onChange={event =>this.setState({name : event.target.value})}
                         />
                     </Form.Field>
                     <Form.Field>
-                        <label>Aadhar Number</label>
+                        <label>Age</label>
                         <Input
-                            label = "aadhar" 
+                            label = "age"
                             labelPosition = "right"
-                            value={this.state.aadhar}
-                            onChange={event =>this.setState({aadhar : event.target.value})}
+                            value={this.state.age}
+                            onChange={event =>this.setState({age : event.target.value})}
                         />
                     </Form.Field>
                     <Form.Field>
-                        <label>Constituency</label>
+                        <label>Gender</label>
                         <Input
-                            label = "constituency" 
+                            label = "gender"
                             labelPosition = "right"
-                            value={this.state.constituency}
-                            onChange={event =>this.setState({constituency : event.target.value})}
+                            value={this.state.gender}
+                            onChange={event =>this.setState({gender : event.target.value})}
+                        />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Previous Record</label>
+                        <Input
+                            label = "previousRecord"
+                            labelPosition = "right"
+                            value={this.state.previousRecord}
+                            onChange={event =>this.setState({previousRecord : event.target.value})}
                         />
                     </Form.Field>
 

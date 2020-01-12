@@ -9,11 +9,11 @@ class RegisterIndex extends Component{
             <Layout>
                 <center>
                     <Link route = '/register/voter'>
-                        <Button>Register as a Voter</Button> 
+                        <Button>Register as a Patient</Button>
                     </Link>
                     
                     <Link route = '/register/candidate'>
-                        <Button>Register as a Candidate</Button> 
+                        <Button>Register as a Doctor</Button>
                     </Link>
                 </center>
             </Layout>

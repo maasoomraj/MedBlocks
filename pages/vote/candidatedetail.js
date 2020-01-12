@@ -8,12 +8,11 @@ import { Router } from '../../routes.js';
 class CandidateDetail extends Component{
     static async getInitialProps(props) {
         const {address} = props.query;
-        const details = await voting.methods.candidateDetails(address).call();
-        const adminDetails = await voting.methods.adminCandidateDetails(address).call();
+        const details = await voting.methods.docterDetails(address).call();
+        const adminDetails = await voting.methods.adminDocterDetails(address).call();
         const accounts = await web3.eth.getAccounts();
-        const voter = await voting.methods.voterDetails(accounts[0]).call();
-        const voterHasVoted = voter.hasVoted;
-        return{voterHasVoted,address,details,adminDetails};
+        const voter = await voting.methods.patientDetails(accounts[0]).call();
+        return{address,details,adminDetails};
     }
 
     state = {
@@ -25,7 +24,7 @@ class CandidateDetail extends Component{
         this.setState({loading : true , errorMessage : ''});
         try{
             const accounts = await web3.eth.getAccounts();
-            await voting.methods.vote(this.props.address).send({
+            await voting.methods.vote().send({
                 from : accounts[0]
             })
             Router.pushRoute('/');
@@ -48,28 +47,18 @@ class CandidateDetail extends Component{
                             {this.props.details.name}
                         </Grid.Column>
                         <Grid.Column>
-                            Aadhar Number : <br/>
-                            {this.props.details.aadhar}
+                            Age: <br/>
+                            {this.props.details.age}
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                     <Grid.Column>
-                        Constituency : <br/>
-                        {this.props.details.constituency}
+                        Gender: <br/>
+                        {this.props.details.gender}
                     </Grid.Column>
                     <Grid.Column>
-                        Attendance in the House : <br/>
-                        {this.props.adminDetails.attendance}
-                    </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                    <Grid.Column>
-                        Criminal Record : <br/>
-                        {this.props.adminDetails.criminalRecord}
-                    </Grid.Column>
-                    <Grid.Column>
-                        Attendance in the House : <br/>
-                        {this.props.adminDetails.fundUtilization}
+                        PreviousRecord : <br/>
+                        {this.props.details.previousRecord}
                     </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
@@ -78,9 +67,7 @@ class CandidateDetail extends Component{
                         {this.props.adminDetails.otherDetails}
                     </Grid.Column>
                     <Grid.Column>
-                    { !!this.props.voterHasVoted ? null : (
-                        <Button onClick = {this.onVote} loading= { this.state.loading }>Vote</Button>
-                    )}
+                        <Button onClick = {this.onVote} loading= { this.state.loading }>Send Reports</Button>
                     </Grid.Column>
                     </Grid.Row>
                 </Grid>

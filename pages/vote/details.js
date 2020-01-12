@@ -8,8 +8,8 @@ import { Router, Link } from '../../routes';
 class VoterDetails extends Component{
     static async getInitialProps(){
         const accounts = await web3.eth.getAccounts();
-        const voter = await voting.methods.voterDetails(accounts[0]).call();
-        if(!voter.aadhar || !voter.isVerified)
+        const voter = await voting.methods.patientDetails(accounts[0]).call();
+        if(!voter.isVerified)
         {
             Router.pushRoute('/register/voter');
         }
@@ -30,18 +30,18 @@ class VoterDetails extends Component{
                             {this.props.voter.name}
                         </Grid.Column>
                         <Grid.Column>
-                            Aadhar Number : <br/>
-                            {this.props.voter.aadhar}
+                            Age : <br/>
+                            {this.props.voter.age}
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                     <Grid.Column>
-                        Constituency : <br/>
-                        {this.props.voter.constituency}
+                        Gender : <br/>
+                        {this.props.voter.gender}
                     </Grid.Column>
                     <Grid.Column>
                             <Link route = '/vote/candidateslist'>
-                                <Button >Vote Now</Button>
+                                <Button >Send Report</Button>
                             </Link>
                     </Grid.Column>
                     </Grid.Row>

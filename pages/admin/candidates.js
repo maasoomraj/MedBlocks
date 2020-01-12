@@ -8,12 +8,12 @@ import RequestRow from '../../components/requestCandidateRow';
 
 class VoterAdmin extends Component{
     static async getInitialProps(){
-            const registeredCandidates = await voting.methods.getCandidates().call();
-            return {registeredCandidates};
+            const registeredDoctors = await voting.methods.getDocters().call();
+            return {registeredDoctors};
     }
 
-    CandidateList(){
-        return this.props.registeredCandidates.map((address,index) =>{
+    DoctorList(){
+        return this.props.registeredDoctors.map((address,index) =>{
             return <RequestRow
                 key={index}
                 address = {address} 
@@ -25,19 +25,20 @@ class VoterAdmin extends Component{
         return(
             <Layout>
                 <Link route = '/admin/voters'>
-                    <Button>Show Voters</Button>
+                    <Button>Show Patients</Button>
                 </Link>
                 <Table singleLine>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Name</Table.HeaderCell>
-                        <Table.HeaderCell>Aadhar Number</Table.HeaderCell>
-                        <Table.HeaderCell>Constituency</Table.HeaderCell>
+                        <Table.HeaderCell>Age</Table.HeaderCell>
+                        <Table.HeaderCell>Gender</Table.HeaderCell>
+                        <Table.HeaderCell>Previous Record</Table.HeaderCell>
                         <Table.HeaderCell>Vertified</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {this.CandidateList()}
+                    {this.DoctorList()}
                 </Table.Body>
                 </Table>
             </Layout>
