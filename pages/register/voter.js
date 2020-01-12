@@ -11,6 +11,7 @@ class RegisterVoter extends Component{
         age : '',
         gender : '',
         preMedicalRecord : '',
+        doctorComments : '',
         errorMessage : '',
         loading : false,
     }

@@ -35,13 +35,23 @@ class VoterDetails extends Component{
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
+                        <Grid.Column>
+                            Gender : <br/>
+                            {this.props.voter.gender}
+                        </Grid.Column>
+                        <Grid.Column>
+                            Medical Records: <br/>
+                            {this.props.voter.preMedicalRecord}
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
                     <Grid.Column>
                         Gender : <br/>
                         {this.props.voter.gender}
                     </Grid.Column>
                     <Grid.Column>
                             <Link route = '/vote/candidateslist'>
-                                <Button >Send Report</Button>
+                                <Button >See Doctors</Button>
                             </Link>
                     </Grid.Column>
                     </Grid.Row>

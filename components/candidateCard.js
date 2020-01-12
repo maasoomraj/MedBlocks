@@ -5,7 +5,6 @@ import voting from '../ethereum/voting';
 import { Router , Link} from '../routes'
 
 class CandidateCard extends Component{
-
     state = {
         errrorMessage : '',
         loading : false,
